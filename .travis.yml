@@ -8,11 +8,18 @@ before_install:
   - docker build -t harfoh/react-test -f ./client/Dockerfile.dev ./client
 
 Script:
-  - docker run -e CI=true harfoh/react-test mpn run test
+  - docker run -e CI=true harfoh/react-test npm run test
 
 after_success:
   - docker build -t harfoh/multi-react ./client
   - docker build -t harfoh/multi-nginx ./nginx
   - docker build -t harfoh/multi-server ./server
   - docker build -t harfoh/multi-worker ./worker
+
+  - echo "DOCKER_PASSWORD" | docker login -u "DOCKER_ID" --password-stdin
+
+  - docker push harfoh/multi-react
+  - docker push harfoh/multi-nginx
+  - docker push harfoh/multi-server
+  - docker push harfoh/multi-worker
 
